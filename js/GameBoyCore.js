@@ -9,6 +9,8 @@
 
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
+
 function GameBoyCore(canvas, ROMImage) {
 	//Params, etc...
 	this.canvas = canvas;						//Canvas DOM object for drawing out the graphics to.
@@ -8315,6 +8317,15 @@ GameBoyCore.prototype.cartIgnoreWrite = function (parentObj, address, data) {
 	//We might have encountered illegal RAM writing or such, so just do nothing...
 }
 GameBoyCore.prototype.memoryWriteNormal = function (parentObj, address, data) {
+	if (address >= 0xD747 && address <= 0xD85F) {
+		console.log("Event Happened!")
+	} else if (address == 0xD35E) {
+		console.log("Changed Map!")
+	} else if (address >= 0XD887 && address <= 0xD89B) {
+		console.log(`${toString(address)}: ${data}`)
+		console.log(address % 2 == 1 ? `New pokemon: ${JSON.stringify(get_poke_from_val(data), null, 2)}` : `\nLevel ${parseInt(data, 16)}`)
+	}
+
 	parentObj.memory[address] = data;
 }
 GameBoyCore.prototype.memoryHighWriteNormal = function (parentObj, address, data) {
@@ -9530,4 +9541,1584 @@ GameBoyCore.prototype.getTypedArray = function (length, defaultValue, numberType
 		}
 	}
 	return arrayHandle;
+}
+
+
+// DYLAN HELPER FUNCTIONS --Since we can't import =*(
+const poke_data = [
+  {
+    "Hex": "01",
+    "Dec": "001",
+    "Species": "Rhydon",
+    "Name": "Rhydon",
+    "Type1": "Ground",
+    "Type2": "Rock"
+  },
+  {
+    "Hex": "02",
+    "Dec": "002",
+    "Species": "Kangaskhan",
+    "Name": "Kangaskhan",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": "03",
+    "Dec": "003",
+    "Species": "Nidoran♂",
+    "Name": "Nidoran♂",
+    "Type1": "Poison",
+    "Type2": ""
+  },
+  {
+    "Hex": "04",
+    "Dec": "004",
+    "Species": "Clefairy",
+    "Name": "Clefairy",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": "05",
+    "Dec": "005",
+    "Species": "Spearow",
+    "Name": "Spearow",
+    "Type1": "Normal",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": "06",
+    "Dec": "006",
+    "Species": "Voltorb",
+    "Name": "Voltorb",
+    "Type1": "Electric",
+    "Type2": ""
+  },
+  {
+    "Hex": "07",
+    "Dec": "007",
+    "Species": "Nidoking",
+    "Name": "Nidoking",
+    "Type1": "Poison",
+    "Type2": "Ground"
+  },
+  {
+    "Hex": "08",
+    "Dec": "008",
+    "Species": "Slowbro",
+    "Name": "Slowbro",
+    "Type1": "Water",
+    "Type2": "Psychic"
+  },
+  {
+    "Hex": "09",
+    "Dec": "009",
+    "Species": "Ivysaur",
+    "Name": "Ivysaur",
+    "Type1": "Grass",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": "0A",
+    "Dec": "010",
+    "Species": "Exeggutor",
+    "Name": "Exeggutor",
+    "Type1": "Grass",
+    "Type2": "Psychic"
+  },
+  {
+    "Hex": "0B",
+    "Dec": "011",
+    "Species": "Lickitung",
+    "Name": "Lickitung",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": "0C",
+    "Dec": "012",
+    "Species": "Exeggcute",
+    "Name": "Exeggcute",
+    "Type1": "Grass",
+    "Type2": "Psychic"
+  },
+  {
+    "Hex": "0D",
+    "Dec": "013",
+    "Species": "Grimer",
+    "Name": "Grimer",
+    "Type1": "Poison",
+    "Type2": ""
+  },
+  {
+    "Hex": "0E",
+    "Dec": "014",
+    "Species": "Gengar",
+    "Name": "Gengar",
+    "Type1": "Ghost",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": "0F",
+    "Dec": "015",
+    "Species": "Nidoran♀",
+    "Name": "Nidoran♀",
+    "Type1": "Poison",
+    "Type2": ""
+  },
+  {
+    "Hex": 10,
+    "Dec": "016",
+    "Species": "Nidoqueen",
+    "Name": "Nidoqueen",
+    "Type1": "Poison",
+    "Type2": "Ground"
+  },
+  {
+    "Hex": 11,
+    "Dec": "017",
+    "Species": "Cubone",
+    "Name": "Cubone",
+    "Type1": "Ground",
+    "Type2": ""
+  },
+  {
+    "Hex": 12,
+    "Dec": "018",
+    "Species": "Rhyhorn",
+    "Name": "Rhyhorn",
+    "Type1": "Ground",
+    "Type2": "Rock"
+  },
+  {
+    "Hex": 13,
+    "Dec": "019",
+    "Species": "Lapras",
+    "Name": "Lapras",
+    "Type1": "Water",
+    "Type2": "Ice"
+  },
+  {
+    "Hex": 14,
+    "Dec": "020",
+    "Species": "Arcanine",
+    "Name": "Arcanine",
+    "Type1": "Fire",
+    "Type2": ""
+  },
+  {
+    "Hex": 15,
+    "Dec": "021",
+    "Species": "Mew",
+    "Name": "Mew",
+    "Type1": "Psychic",
+    "Type2": ""
+  },
+  {
+    "Hex": 16,
+    "Dec": "022",
+    "Species": "Gyarados",
+    "Name": "Gyarados",
+    "Type1": "Water",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": 17,
+    "Dec": "023",
+    "Species": "Shellder",
+    "Name": "Shellder",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": 18,
+    "Dec": "024",
+    "Species": "Tentacool",
+    "Name": "Tentacool",
+    "Type1": "Water",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": 19,
+    "Dec": "025",
+    "Species": "Gastly",
+    "Name": "Gastly",
+    "Type1": "Ghost",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": "1A",
+    "Dec": "026",
+    "Species": "Scyther",
+    "Name": "Scyther",
+    "Type1": "Bug",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": "1B",
+    "Dec": "027",
+    "Species": "Staryu",
+    "Name": "Staryu",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": "1C",
+    "Dec": "028",
+    "Species": "Blastoise",
+    "Name": "Blastoise",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": "1D",
+    "Dec": "029",
+    "Species": "Pinsir",
+    "Name": "Pinsir",
+    "Type1": "Bug",
+    "Type2": ""
+  },
+  {
+    "Hex": "1E",
+    "Dec": "030",
+    "Species": "Tangela",
+    "Name": "Tangela",
+    "Type1": "Grass",
+    "Type2": ""
+  },
+  {
+    "Hex": "1F",
+    "Dec": "031",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Scizor)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 20,
+    "Dec": "032",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Shuckle)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 21,
+    "Dec": "033",
+    "Species": "Growlithe",
+    "Name": "Growlithe",
+    "Type1": "Fire",
+    "Type2": ""
+  },
+  {
+    "Hex": 22,
+    "Dec": "034",
+    "Species": "Onix",
+    "Name": "Onix",
+    "Type1": "Rock",
+    "Type2": "Ground"
+  },
+  {
+    "Hex": 23,
+    "Dec": "035",
+    "Species": "Fearow",
+    "Name": "Fearow",
+    "Type1": "Normal",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": 24,
+    "Dec": "036",
+    "Species": "Pidgey",
+    "Name": "Pidgey",
+    "Type1": "Normal",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": 25,
+    "Dec": "037",
+    "Species": "Slowpoke",
+    "Name": "Slowpoke",
+    "Type1": "Water",
+    "Type2": "Psychic"
+  },
+  {
+    "Hex": 26,
+    "Dec": "038",
+    "Species": "Kadabra",
+    "Name": "Kadabra",
+    "Type1": "Psychic",
+    "Type2": ""
+  },
+  {
+    "Hex": 27,
+    "Dec": "039",
+    "Species": "Graveler",
+    "Name": "Graveler",
+    "Type1": "Rock",
+    "Type2": "Ground"
+  },
+  {
+    "Hex": 28,
+    "Dec": "040",
+    "Species": "Chansey",
+    "Name": "Chansey",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": 29,
+    "Dec": "041",
+    "Species": "Machoke",
+    "Name": "Machoke",
+    "Type1": "Fighting",
+    "Type2": ""
+  },
+  {
+    "Hex": "2A",
+    "Dec": "042",
+    "Species": "Mr. Mime",
+    "Name": "Mr. Mime",
+    "Type1": "Psychic",
+    "Type2": ""
+  },
+  {
+    "Hex": "2B",
+    "Dec": "043",
+    "Species": "Hitmonlee",
+    "Name": "Hitmonlee",
+    "Type1": "Fighting",
+    "Type2": ""
+  },
+  {
+    "Hex": "2C",
+    "Dec": "044",
+    "Species": "Hitmonchan",
+    "Name": "Hitmonchan",
+    "Type1": "Fighting",
+    "Type2": ""
+  },
+  {
+    "Hex": "2D",
+    "Dec": "045",
+    "Species": "Arbok",
+    "Name": "Arbok",
+    "Type1": "Poison",
+    "Type2": ""
+  },
+  {
+    "Hex": "2E",
+    "Dec": "046",
+    "Species": "Parasect",
+    "Name": "Parasect",
+    "Type1": "Bug",
+    "Type2": "Grass"
+  },
+  {
+    "Hex": "2F",
+    "Dec": "047",
+    "Species": "Psyduck",
+    "Name": "Psyduck",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": 30,
+    "Dec": "048",
+    "Species": "Drowzee",
+    "Name": "Drowzee",
+    "Type1": "Psychic",
+    "Type2": ""
+  },
+  {
+    "Hex": 31,
+    "Dec": "049",
+    "Species": "Golem",
+    "Name": "Golem",
+    "Type1": "Rock",
+    "Type2": "Ground"
+  },
+  {
+    "Hex": 32,
+    "Dec": "050",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Heracross)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 33,
+    "Dec": "051",
+    "Species": "Magmar",
+    "Name": "Magmar",
+    "Type1": "Fire",
+    "Type2": ""
+  },
+  {
+    "Hex": 34,
+    "Dec": "052",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Ho-Oh)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 35,
+    "Dec": "053",
+    "Species": "Electabuzz",
+    "Name": "Electabuzz",
+    "Type1": "Electric",
+    "Type2": ""
+  },
+  {
+    "Hex": 36,
+    "Dec": "054",
+    "Species": "Magneton",
+    "Name": "Magneton",
+    "Type1": "Electric",
+    "Type2": ""
+  },
+  {
+    "Hex": 37,
+    "Dec": "055",
+    "Species": "Koffing",
+    "Name": "Koffing",
+    "Type1": "Poison",
+    "Type2": ""
+  },
+  {
+    "Hex": 38,
+    "Dec": "056",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Sneasel)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 39,
+    "Dec": "057",
+    "Species": "Mankey",
+    "Name": "Mankey",
+    "Type1": "Fighting",
+    "Type2": ""
+  },
+  {
+    "Hex": "3A",
+    "Dec": "058",
+    "Species": "Seel",
+    "Name": "Seel",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": "3B",
+    "Dec": "059",
+    "Species": "Diglett",
+    "Name": "Diglett",
+    "Type1": "Ground",
+    "Type2": ""
+  },
+  {
+    "Hex": "3C",
+    "Dec": "060",
+    "Species": "Tauros",
+    "Name": "Tauros",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": "3D",
+    "Dec": "061",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Teddiursa)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "3E",
+    "Dec": "062",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Ursaring)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "3F",
+    "Dec": "063",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Slugma)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 40,
+    "Dec": "064",
+    "Species": "Farfetch'd",
+    "Name": "Farfetch'd",
+    "Type1": "Normal",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": 41,
+    "Dec": "065",
+    "Species": "Venonat",
+    "Name": "Venonat",
+    "Type1": "Bug",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": 42,
+    "Dec": "066",
+    "Species": "Dragonite",
+    "Name": "Dragonite",
+    "Type1": "Dragon",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": 43,
+    "Dec": "067",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Magcargo)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 44,
+    "Dec": "068",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Swinub)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 45,
+    "Dec": "069",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Piloswine)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 46,
+    "Dec": "070",
+    "Species": "Doduo",
+    "Name": "Doduo",
+    "Type1": "Normal",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": 47,
+    "Dec": "071",
+    "Species": "Poliwag",
+    "Name": "Poliwag",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": 48,
+    "Dec": "072",
+    "Species": "Jynx",
+    "Name": "Jynx",
+    "Type1": "Ice",
+    "Type2": "Psychic"
+  },
+  {
+    "Hex": 49,
+    "Dec": "073",
+    "Species": "Moltres",
+    "Name": "Moltres",
+    "Type1": "Fire",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": "4A",
+    "Dec": "074",
+    "Species": "Articuno",
+    "Name": "Articuno",
+    "Type1": "Ice",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": "4B",
+    "Dec": "075",
+    "Species": "Zapdos",
+    "Name": "Zapdos",
+    "Type1": "Electric",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": "4C",
+    "Dec": "076",
+    "Species": "Ditto",
+    "Name": "Ditto",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": "4D",
+    "Dec": "077",
+    "Species": "Meowth",
+    "Name": "Meowth",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": "4E",
+    "Dec": "078",
+    "Species": "Krabby",
+    "Name": "Krabby",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": "4F",
+    "Dec": "079",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Corsola)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 50,
+    "Dec": "080",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Remoraid)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 51,
+    "Dec": "081",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Octillery)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 52,
+    "Dec": "082",
+    "Species": "Vulpix",
+    "Name": "Vulpix",
+    "Type1": "Fire",
+    "Type2": ""
+  },
+  {
+    "Hex": 53,
+    "Dec": "083",
+    "Species": "Ninetales",
+    "Name": "Ninetales",
+    "Type1": "Fire",
+    "Type2": ""
+  },
+  {
+    "Hex": 54,
+    "Dec": "084",
+    "Species": "Pikachu",
+    "Name": "Pikachu",
+    "Type1": "Electric",
+    "Type2": ""
+  },
+  {
+    "Hex": 55,
+    "Dec": "085",
+    "Species": "Raichu",
+    "Name": "Raichu",
+    "Type1": "Electric",
+    "Type2": ""
+  },
+  {
+    "Hex": 56,
+    "Dec": "086",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Delibird)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 57,
+    "Dec": "087",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Mantine)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 58,
+    "Dec": "088",
+    "Species": "Dratini",
+    "Name": "Dratini",
+    "Type1": "Dragon",
+    "Type2": ""
+  },
+  {
+    "Hex": 59,
+    "Dec": "089",
+    "Species": "Dragonair",
+    "Name": "Dragonair",
+    "Type1": "Dragon",
+    "Type2": ""
+  },
+  {
+    "Hex": "5A",
+    "Dec": "090",
+    "Species": "Kabuto",
+    "Name": "Kabuto",
+    "Type1": "Rock",
+    "Type2": "Water"
+  },
+  {
+    "Hex": "5B",
+    "Dec": "091",
+    "Species": "Kabutops",
+    "Name": "Kabutops",
+    "Type1": "Rock",
+    "Type2": "Water"
+  },
+  {
+    "Hex": "5C",
+    "Dec": "092",
+    "Species": "Horsea",
+    "Name": "Horsea",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": "5D",
+    "Dec": "093",
+    "Species": "Seadra",
+    "Name": "Seadra",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": "5E",
+    "Dec": "094",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Skarmory)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "5F",
+    "Dec": "095",
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Houndour)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 60,
+    "Dec": "096",
+    "Species": "Sandshrew",
+    "Name": "Sandshrew",
+    "Type1": "Ground",
+    "Type2": ""
+  },
+  {
+    "Hex": 61,
+    "Dec": "097",
+    "Species": "Sandslash",
+    "Name": "Sandslash",
+    "Type1": "Ground",
+    "Type2": ""
+  },
+  {
+    "Hex": 62,
+    "Dec": "098",
+    "Species": "Omanyte",
+    "Name": "Omanyte",
+    "Type1": "Rock",
+    "Type2": "Water"
+  },
+  {
+    "Hex": 63,
+    "Dec": "099",
+    "Species": "Omastar",
+    "Name": "Omastar",
+    "Type1": "Rock",
+    "Type2": "Water"
+  },
+  {
+    "Hex": 64,
+    "Dec": 100,
+    "Species": "Jigglypuff",
+    "Name": "Jigglypuff",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": 65,
+    "Dec": 101,
+    "Species": "Wigglytuff",
+    "Name": "Wigglytuff",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": 66,
+    "Dec": 102,
+    "Species": "Eevee",
+    "Name": "Eevee",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": 67,
+    "Dec": 103,
+    "Species": "Flareon",
+    "Name": "Flareon",
+    "Type1": "Fire",
+    "Type2": ""
+  },
+  {
+    "Hex": 68,
+    "Dec": 104,
+    "Species": "Jolteon",
+    "Name": "Jolteon",
+    "Type1": "Electric",
+    "Type2": ""
+  },
+  {
+    "Hex": 69,
+    "Dec": 105,
+    "Species": "Vaporeon",
+    "Name": "Vaporeon",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": "6A",
+    "Dec": 106,
+    "Species": "Machop",
+    "Name": "Machop",
+    "Type1": "Fighting",
+    "Type2": ""
+  },
+  {
+    "Hex": "6B",
+    "Dec": 107,
+    "Species": "Zubat",
+    "Name": "Zubat",
+    "Type1": "Poison",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": "6C",
+    "Dec": 108,
+    "Species": "Ekans",
+    "Name": "Ekans",
+    "Type1": "Poison",
+    "Type2": ""
+  },
+  {
+    "Hex": "6D",
+    "Dec": 109,
+    "Species": "Paras",
+    "Name": "Paras",
+    "Type1": "Bug",
+    "Type2": "Grass"
+  },
+  {
+    "Hex": "6E",
+    "Dec": 110,
+    "Species": "Poliwhirl",
+    "Name": "Poliwhirl",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": "6F",
+    "Dec": 111,
+    "Species": "Poliwrath",
+    "Name": "Poliwrath",
+    "Type1": "Water",
+    "Type2": "Fighting"
+  },
+  {
+    "Hex": 70,
+    "Dec": 112,
+    "Species": "Weedle",
+    "Name": "Weedle",
+    "Type1": "Bug",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": 71,
+    "Dec": 113,
+    "Species": "Kakuna",
+    "Name": "Kakuna",
+    "Type1": "Bug",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": 72,
+    "Dec": 114,
+    "Species": "Beedrill",
+    "Name": "Beedrill",
+    "Type1": "Bug",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": 73,
+    "Dec": 115,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Houndoom)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 74,
+    "Dec": 116,
+    "Species": "Dodrio",
+    "Name": "Dodrio",
+    "Type1": "Normal",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": 75,
+    "Dec": 117,
+    "Species": "Primeape",
+    "Name": "Primeape",
+    "Type1": "Fighting",
+    "Type2": ""
+  },
+  {
+    "Hex": 76,
+    "Dec": 118,
+    "Species": "Dugtrio",
+    "Name": "Dugtrio",
+    "Type1": "Ground",
+    "Type2": ""
+  },
+  {
+    "Hex": 77,
+    "Dec": 119,
+    "Species": "Venomoth",
+    "Name": "Venomoth",
+    "Type1": "Bug",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": 78,
+    "Dec": 120,
+    "Species": "Dewgong",
+    "Name": "Dewgong",
+    "Type1": "Water",
+    "Type2": "Ice"
+  },
+  {
+    "Hex": 79,
+    "Dec": 121,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Kingdra)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "7A",
+    "Dec": 122,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Phanpy)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "7B",
+    "Dec": 123,
+    "Species": "Caterpie",
+    "Name": "Caterpie",
+    "Type1": "Bug",
+    "Type2": ""
+  },
+  {
+    "Hex": "7C",
+    "Dec": 124,
+    "Species": "Metapod",
+    "Name": "Metapod",
+    "Type1": "Bug",
+    "Type2": ""
+  },
+  {
+    "Hex": "7D",
+    "Dec": 125,
+    "Species": "Butterfree",
+    "Name": "Butterfree",
+    "Type1": "Bug",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": "7E",
+    "Dec": 126,
+    "Species": "Machamp",
+    "Name": "Machamp",
+    "Type1": "Fighting",
+    "Type2": ""
+  },
+  {
+    "Hex": "7F",
+    "Dec": 127,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Donphan)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 80,
+    "Dec": 128,
+    "Species": "Golduck",
+    "Name": "Golduck",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": 81,
+    "Dec": 129,
+    "Species": "Hypno",
+    "Name": "Hypno",
+    "Type1": "Psychic",
+    "Type2": ""
+  },
+  {
+    "Hex": 82,
+    "Dec": 130,
+    "Species": "Golbat",
+    "Name": "Golbat",
+    "Type1": "Poison",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": 83,
+    "Dec": 131,
+    "Species": "Mewtwo",
+    "Name": "Mewtwo",
+    "Type1": "Psychic",
+    "Type2": ""
+  },
+  {
+    "Hex": 84,
+    "Dec": 132,
+    "Species": "Snorlax",
+    "Name": "Snorlax",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": 85,
+    "Dec": 133,
+    "Species": "Magikarp",
+    "Name": "Magikarp",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": 86,
+    "Dec": 134,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Porygon2)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 87,
+    "Dec": 135,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Stantler)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 88,
+    "Dec": 136,
+    "Species": "Muk",
+    "Name": "Muk",
+    "Type1": "Poison",
+    "Type2": ""
+  },
+  {
+    "Hex": 89,
+    "Dec": 137,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Smeargle)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "8A",
+    "Dec": 138,
+    "Species": "Kingler",
+    "Name": "Kingler",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": "8B",
+    "Dec": 139,
+    "Species": "Cloyster",
+    "Name": "Cloyster",
+    "Type1": "Water",
+    "Type2": "Ice"
+  },
+  {
+    "Hex": "8C",
+    "Dec": 140,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Tyrogue)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "8D",
+    "Dec": 141,
+    "Species": "Electrode",
+    "Name": "Electrode",
+    "Type1": "Electric",
+    "Type2": ""
+  },
+  {
+    "Hex": "8E",
+    "Dec": 142,
+    "Species": "Clefable",
+    "Name": "Clefable",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": "8F",
+    "Dec": 143,
+    "Species": "Weezing",
+    "Name": "Weezing",
+    "Type1": "Poison",
+    "Type2": ""
+  },
+  {
+    "Hex": 90,
+    "Dec": 144,
+    "Species": "Persian",
+    "Name": "Persian",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": 91,
+    "Dec": 145,
+    "Species": "Marowak",
+    "Name": "Marowak",
+    "Type1": "Ground",
+    "Type2": ""
+  },
+  {
+    "Hex": 92,
+    "Dec": 146,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Hitmontop)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": 93,
+    "Dec": 147,
+    "Species": "Haunter",
+    "Name": "Haunter",
+    "Type1": "Ghost",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": 94,
+    "Dec": 148,
+    "Species": "Abra",
+    "Name": "Abra",
+    "Type1": "Psychic",
+    "Type2": ""
+  },
+  {
+    "Hex": 95,
+    "Dec": 149,
+    "Species": "Alakazam",
+    "Name": "Alakazam",
+    "Type1": "Psychic",
+    "Type2": ""
+  },
+  {
+    "Hex": 96,
+    "Dec": 150,
+    "Species": "Pidgeotto",
+    "Name": "Pidgeotto",
+    "Type1": "Normal",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": 97,
+    "Dec": 151,
+    "Species": "Pidgeot",
+    "Name": "Pidgeot",
+    "Type1": "Normal",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": 98,
+    "Dec": 152,
+    "Species": "Starmie",
+    "Name": "Starmie",
+    "Type1": "Water",
+    "Type2": "Psychic"
+  },
+  {
+    "Hex": 99,
+    "Dec": 153,
+    "Species": "Bulbasaur",
+    "Name": "Bulbasaur",
+    "Type1": "Grass",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": "9A",
+    "Dec": 154,
+    "Species": "Venusaur",
+    "Name": "Venusaur",
+    "Type1": "Grass",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": "9B",
+    "Dec": 155,
+    "Species": "Tentacruel",
+    "Name": "Tentacruel",
+    "Type1": "Water",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": "9C",
+    "Dec": 156,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Smoochum)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "9D",
+    "Dec": 157,
+    "Species": "Goldeen",
+    "Name": "Goldeen",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": "9E",
+    "Dec": 158,
+    "Species": "Seaking",
+    "Name": "Seaking",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": "9F",
+    "Dec": 159,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Elekid)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "A0",
+    "Dec": 160,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Magby)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "A1",
+    "Dec": 161,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Miltank)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "A2",
+    "Dec": 162,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Blissey)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "A3",
+    "Dec": 163,
+    "Species": "Ponyta",
+    "Name": "Ponyta",
+    "Type1": "Fire",
+    "Type2": ""
+  },
+  {
+    "Hex": "A4",
+    "Dec": 164,
+    "Species": "Rapidash",
+    "Name": "Rapidash",
+    "Type1": "Fire",
+    "Type2": ""
+  },
+  {
+    "Hex": "A5",
+    "Dec": 165,
+    "Species": "Rattata",
+    "Name": "Rattata",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": "A6",
+    "Dec": 166,
+    "Species": "Raticate",
+    "Name": "Raticate",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": "A7",
+    "Dec": 167,
+    "Species": "Nidorino",
+    "Name": "Nidorino",
+    "Type1": "Poison",
+    "Type2": ""
+  },
+  {
+    "Hex": "A8",
+    "Dec": 168,
+    "Species": "Nidorina",
+    "Name": "Nidorina",
+    "Type1": "Poison",
+    "Type2": ""
+  },
+  {
+    "Hex": "A9",
+    "Dec": 169,
+    "Species": "Geodude",
+    "Name": "Geodude",
+    "Type1": "Rock",
+    "Type2": "Ground"
+  },
+  {
+    "Hex": "AA",
+    "Dec": 170,
+    "Species": "Porygon",
+    "Name": "Porygon",
+    "Type1": "Normal",
+    "Type2": ""
+  },
+  {
+    "Hex": "AB",
+    "Dec": 171,
+    "Species": "Aerodactyl",
+    "Name": "Aerodactyl",
+    "Type1": "Rock",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": "AC",
+    "Dec": 172,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Raikou)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "AD",
+    "Dec": 173,
+    "Species": "Magnemite",
+    "Name": "Magnemite",
+    "Type1": "Electric",
+    "Type2": ""
+  },
+  {
+    "Hex": "AE",
+    "Dec": 174,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Entei)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "AF",
+    "Dec": 175,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Suicune)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "B0",
+    "Dec": 176,
+    "Species": "Charmander",
+    "Name": "Charmander",
+    "Type1": "Fire",
+    "Type2": ""
+  },
+  {
+    "Hex": "B1",
+    "Dec": 177,
+    "Species": "Squirtle",
+    "Name": "Squirtle",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": "B2",
+    "Dec": 178,
+    "Species": "Charmeleon",
+    "Name": "Charmeleon",
+    "Type1": "Fire",
+    "Type2": ""
+  },
+  {
+    "Hex": "B3",
+    "Dec": 179,
+    "Species": "Wartortle",
+    "Name": "Wartortle",
+    "Type1": "Water",
+    "Type2": ""
+  },
+  {
+    "Hex": "B4",
+    "Dec": 180,
+    "Species": "Charizard",
+    "Name": "Charizard",
+    "Type1": "Fire",
+    "Type2": "Flying"
+  },
+  {
+    "Hex": "B5",
+    "Dec": 181,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. (Larvitar)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "B6",
+    "Dec": 182,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. Kabutops Fossil (Pupitar)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "B7",
+    "Dec": 183,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. Aerodactyl Fossil (Tyranitar)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "B8",
+    "Dec": 184,
+    "Species": "MissingNo.",
+    "Name": "MissingNo. Ghost (Lugia)",
+    "Type1": "Bird",
+    "Type2": "Normal"
+  },
+  {
+    "Hex": "B9",
+    "Dec": 185,
+    "Species": "Oddish",
+    "Name": "Oddish",
+    "Type1": "Grass",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": "BA",
+    "Dec": 186,
+    "Species": "Gloom",
+    "Name": "Gloom",
+    "Type1": "Grass",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": "BB",
+    "Dec": 187,
+    "Species": "Vileplume",
+    "Name": "Vileplume",
+    "Type1": "Grass",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": "BC",
+    "Dec": 188,
+    "Species": "Bellsprout",
+    "Name": "Bellsprout",
+    "Type1": "Grass",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": "BD",
+    "Dec": 189,
+    "Species": "Weepinbell",
+    "Name": "Weepinbell",
+    "Type1": "Grass",
+    "Type2": "Poison"
+  },
+  {
+    "Hex": "BE",
+    "Dec": 190,
+    "Species": "Victreebel",
+    "Name": "Victreebel",
+    "Type1": "Grass",
+    "Type2": "Poison"
+  }
+]
+
+const get_poke_from_val = idx => {
+	if (idx == 0) {
+		return ""
+	}
+
+	const poke = poke_data[idx - 1]
+	
+	return {
+		species: poke.Species,
+		type1: poke.Type1,
+		type2: poke.Type2
+	}
+}
+
+const dummy_send = async (data) => {
+	console.log(`Sent data ${data}`)
+	return
+}
+
+const dummy_receive = async () => {
+	return 0
+}
+
+const custom_serial = that => {
+	if (that.serialTimer > 0) {										//Serial Timing
+		//IRQ Counter:
+		that.serialTimer -= that.CPUTicks;
+		if (that.serialTimer <= 0) {
+			that.interruptsRequested |= 0x8;
+			that.checkIRQMatching();
+		}
+
+		//Bit Shit Counter:
+		that.serialShiftTimer -= that.CPUTicks;
+		if (that.serialShiftTimer <= 0) {
+			that.serialShiftTimer = that.serialShiftTimerAllocated;
+
+			//So, we can use an index that counts from 0 to 7
+			idx++
+			if (idx > 7) {
+				//we load a new byte from the server, setting it to (FE?) in the meantime to show that data is awaited.
+				that.serialByteReceived = await dummy_send() //get_byte_from_server()
+				if (that.serialByteReady) {
+					send_byte_to_server(that.serialByteSend)
+					that.serialByteReady = false
+				}
+			}
+
+			that.memory[0xFF01] = ((that.memory[0xFF01] << 1) & 0xFE) | that.serialByteReceived[idx];	//We could shift in actual link data here if we were to implement such!!!
+			//that.memory[0xFF01] = ((that.memory[0xFF01] << 1) & 0xFE) | server-byte[idx]
+
+		}
+	}
 }
