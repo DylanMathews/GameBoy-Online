@@ -11091,7 +11091,7 @@ const dummy_receive = async () => {
 	return 0
 }
 
-const custom_serial = that => {
+const custom_serial = async (that) => {
 	if (that.serialTimer > 0) {										//Serial Timing
 		//IRQ Counter:
 		that.serialTimer -= that.CPUTicks;
